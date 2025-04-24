@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Postingan | Petstagram</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/editpost.css">
+</head>
+<body>
+  <header class="main-header">
+    <h1><a href="/" style="text-decoration: none; color: white;">Petstagram</a></h1>
+    <nav class="main-nav">
+      <a href="/">Beranda</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+  </header>
+
+  <div class="edit-post-container">
+    <h2 class="page-title">Edit Postingan</h2>
+    <form class="edit-form" action="/posts/edit/<%= post._id %>" method="POST">
+      <div class="form-group">
+        <label for="title">Judul Postingan</label>
+        <input 
+          type="text" 
+          id="title" 
+          name="title" 
+          value="<%= post.title %>" 
+          required
+          placeholder="Masukkan judul postingan..."
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="content">Isi Postingan</label>
+        <textarea 
+          id="content" 
+          name="content" 
+          required
+          placeholder="Tulis isi postingan Anda di sini..."
+        ><%= post.content %></textarea>
+      </div>
+
+      <div class="btn-container">
+        <button type="submit" class="btn-save">Simpan Perubahan</button>
+        <a href="/" class="btn-cancel">Batal</a>
+      </div>
+    </form>
+  </div>
+
+  <footer class="main-footer">
+    <p>&copy; 2025 Petstagram - All Rights Reserved</p>
+  </footer>
+</body>
+</html>

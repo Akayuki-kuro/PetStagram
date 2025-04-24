@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Petstagram</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .error-container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+    .error-message {
+      color: #721c24;
+      background: #f8d7da;
+      padding: 1rem;
+      border-radius: 4px;
+      margin: 1rem 0;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #4CAF50;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <h1>Oops!</h1>
+    <div class="error-message">
+      <%= message %>
+    </div>
+    <a href="/" class="back-link">← Kembali ke Beranda</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <h1><a href="/" style="text-decoration: none; color: white;">Petstagram</a></h1>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/login.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <header class="main-header">
+    <h1>Petstagram</h1>
+    <nav class="main-nav">
+      <a href="/profile">Profile</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+  <div class="center-wrapper">
+    <h2>Edit Profil Saya</h2>
+    <% if (error) { %>
+      <p class="error-message"><%= error %></p>
+    <% } %>
+    <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+      <div class="input-group">
+        <label>Email:</label>
+        <input type="email" name="email" value="<%= user.email || '' %>">
+      </div>
+      <div class="input-group">
+        <label>Bio:</label>
+        <textarea name="bio" placeholder="Bio singkat..."><%= user.bio || '' %></textarea>
+      </div>
+      <div class="input-group">
+        <label>Foto Profil (Opsional):</label>
+        <input type="file" name="profilePicture">
+      </div>
+      <button type="submit" class="btn-login">Simpan Perubahan</button>
+    </form>
+  </div>
+  <footer class="main-footer">
+    <p>&copy; 2025 Petstagram - All Rights Reserved</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Register </title>
+  <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="center-wrapper">
+    <h2>Daftar Akun</h2>
+    <% if (error) { %>
+      <p class="error-message"><%= error %></p>
+    <% } %>
+    <form action="/auth/register" method="POST">
+      <div class="input-group">
+        <input type="text" name="username" placeholder="Masukkan username Anda" required>
+      </div>
+      <div class="input-group">
+        <input type="text" name="name" placeholder="Masukkan nama lengkap Anda" required>
+      </div>
+      <div class="input-group">
+        <input type="email" name="email" placeholder="Masukkan email Anda" required>
+      </div>
+      <div class="input-group">
+        <input type="password" name="password" placeholder="Masukkan password Anda" required>
+      </div>
+      <button type="submit" class="btn-login">Buat Akun</button>
+      <div class="signup-link">
+        Sudah punya akun? <a href="/auth/login">Masuk di sini</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

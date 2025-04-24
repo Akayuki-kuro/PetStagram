@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body class="<%= user && user.darkMode ? 'dark-mode' : '' %>">
+  <!-- HEADER -->
+  <header class="main-header">
+    <h1><a href="/" style="text-decoration: none; color: white;">Petstagram</a></h1>
+    <nav class="main-nav">
+      <a href="/">Home</a>
+      <a href="/posts/new">Buat Postingan</a>
+      <a href="/komunitas">komunitas</a>
+      <a href="/tentang">Tentang</a>
+      <a href="/auth/logout">Logout</a>
+    </nav>
+    <div class="header-controls">
+      <% if (locals.user) { %>
+        <a href="/profile" class="profile-link">
+          <img src="<%= locals.user.photo %>" alt="Foto Profil" class="profile-picture">
+          <span>Profil</span>
+        </a>
+      <% } else { %>
+        <a href="/auth/login" class="login-link">Login</a>
+      <% } %>
+    </div>
+  </header>
+
+  <div class="main-wrapper">
+    <div class="single-post-container">
+      <div class="post-card" data-post-id="<%= post._id %>">
+        <!-- Post Header -->
+        <div class="post-header">
+          <img src="<%= post.author.photo %>" alt="<%= post.author.username %>" class="post-author-pic">
+          <div class="post-author-info">
+            <span class="post-author-name"><%= post.author.username %></span>
+          </div>
+          <% if (user._id.toString() === post.author._id.toString()) { %>
+            <div class="post-menu">
+              <button class="menu-dots material-symbols-outlined">more_vert</button>
+              <div class="dropdown-menu">
+                <a href="/posts/edit/<%= post._id %>">Edit</a>
+                <a href="/posts/delete/<%= post._id %>" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+                <% if (post.image) { %>
+                  <a href="<%= post.image %>" download>Download Image</a>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Post Content -->
+        <% if (post.image) { %>
+          <div class="post-image-container">
+            <img src="<%= post.image %>" alt="Post image" class="post-image">
+          </div>
+        <% } %>
+        
+        <h3><%= post.title %></h3>
+        <p><%= post.content %></p>
+
+        <!-- Post Engagement -->
+        <div class="post-engagement">
+          <button class="engage-btn like-btn <%= post.likes.some(like => like._id.toString() === user._id.toString()) ? 'liked' : '' %>" 
+                  onclick="toggleLike('<%= post._id %>')">
+            <span class="material-symbols-outlined like-icon">
+              favorite
+            </span>
+            <span class="like-count"><%= post.likes.length %></span>
+          </button>
+          
+          <button class="engage-btn comment-btn" onclick="toggleComments('<%= post._id %>')">
+            <span class="material-symbols-outlined">
+              chat_bubble
+            </span>
+            <span class="comment-count"><%= post.comments.length %></span>
+          </button>
+          
+          <button class="engage-btn share-btn" onclick="sharePost('<%= post._id %>')">
+            <span class="material-symbols-outlined">
+              share
+            </span>
+            <span class="share-count"><%= post.shareCount || 0 %></span>
+          </button>
+        </div>
+
+        <div class="post-date">
+          Diposting pada: <%= new Date(post.createdAt).toLocaleString() %>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section" id="comments-<%= post._id %>">
+          <div class="comments-list">
+            <% post.comments.forEach(comment => { %>
+              <div class="comment" data-comment-id="<%= comment._id %>">
+                <img src="<%= comment.author.photo %>" alt="<%= comment.author.username %>" class="comment-avatar">
+                <div class="comment-content">
+                  <strong><%= comment.author.username %></strong>
+                  <p><%= comment.content %></p>
+                  <% if (user._id.toString() === comment.author._id.toString()) { %>
+                    <button class="delete-comment" onclick="deleteComment('<%= post._id %>', '<%= comment._id %>')">×</button>
+                  <% } %>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+          <form class="comment-form" onsubmit="addComment(event, '<%= post._id %>')">
+            <input type="text" placeholder="Add a comment..." required>
+            <button type="submit">Post</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="main-footer">
+    <p>&copy; 2025 Petstagram - All Rights Reserved</p>
+  </footer>
+
+  <script>
+    // Include all the JavaScript functions from index.ejs
+    async function toggleLike(postId) {
+      try {
+        const response = await fetch(`/posts/${postId}/like`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const data = await response.json();
+        if (response.ok) {
+          const likeBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .like-btn`);
+          const likeCount = likeBtn.querySelector('.like-count');
+          likeCount.textContent = data.likeCount;
+          likeBtn.classList.toggle('liked');
+        } else {
+          throw new Error(data.error || 'Failed to toggle like');
+        }
+      } catch (err) {
+        console.error('Error toggling like:', err);
+        alert('Failed to update like. Please try again.');
+      }
+    }
+
+    function toggleComments(postId) {
+      const commentsSection = document.getElementById(`comments-${postId}`);
+      commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function addComment(event, postId) {
+      event.preventDefault();
+      const form = event.target;
+      const input = form.querySelector('input');
+      const content = input.value.trim();
+      
+      if (!content) return;
+
+      try {
+        const response = await fetch(`/posts/${postId}/comment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          const commentsList = form.parentElement.querySelector('.comments-list');
+          const newComment = document.createElement('div');
+          newComment.className = 'comment';
+          newComment.dataset.commentId = data.comment._id;
+          
+          newComment.innerHTML = `
+            <img src="${data.comment.author.photo}" alt="${data.comment.author.username}" class="comment-avatar">
+            <div class="comment-content">
+              <strong>${data.comment.author.username}</strong>
+              <p>${data.comment.content}</p>
+              <button class="delete-comment" onclick="deleteComment('${postId}', '${data.comment._id}')">×</button>
+            </div>
+          `;
+          
+          commentsList.appendChild(newComment);
+          
+          const commentCount = form.parentElement.parentElement.querySelector('.comment-count');
+          commentCount.textContent = parseInt(commentCount.textContent) + 1;
+          
+          input.value = '';
+        } else {
+          throw new Error(data.error || 'Failed to add comment');
+        }
+      } catch (err) {
+        console.error('Error adding comment:', err);
+        alert('Failed to add comment. Please try again.');
+      }
+    }
+
+    async function deleteComment(postId, commentId) {
+      if (!confirm('Are you sure you want to delete this comment?')) return;
+
+      try {
+        const response = await fetch(`/posts/${postId}/comment/${commentId}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          const comment = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
+          comment.remove();
+          
+          const commentCount = document.querySelector(`.post-card[data-post-id="${postId}"] .comment-count`);
+          commentCount.textContent = parseInt(commentCount.textContent) - 1;
+        } else {
+          const data = await response.json();
+          throw new Error(data.error || 'Failed to delete comment');
+        }
+      } catch (err) {
+        console.error('Error deleting comment:', err);
+        alert('Failed to delete comment. Please try again.');
+      }
+    }
+
+    async function sharePost(postId) {
+      try {
+        const response = await fetch(`/posts/${postId}/share`, {
+          method: 'POST'
+        });
+        
+        const data = await response.json();
+        if (response.ok) {
+          const shareCount = document.querySelector(`.post-card[data-post-id="${postId}"] .share-count`);
+          shareCount.textContent = data.shareCount;
+          
+          // Create a temporary input to copy the post URL
+          const postUrl = window.location.href;
+          const tempInput = document.createElement('input');
+          tempInput.value = postUrl;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          document.execCommand('copy');
+          document.body.removeChild(tempInput);
+          
+          alert('Post URL copied to clipboard!');
+        } else {
+          throw new Error(data.error || 'Failed to share post');
+        }
+      } catch (err) {
+        console.error('Error sharing post:', err);
+        alert('Failed to share post. Please try again.');
+      }
+    }
+
+    // --- Dropdown Menu Toggle --- 
+    document.addEventListener('click', function(event) {
+      // Close any open dropdowns if the click is outside
+      const openDropdowns = document.querySelectorAll('.dropdown-menu');
+      let clickedOnMenuButton = event.target.classList.contains('menu-dots');
+      let clickedInsideDropdown = event.target.closest('.dropdown-menu');
+      
+      openDropdowns.forEach(dropdown => {
+        const menuButton = dropdown.previousElementSibling;
+        // If the click is not on the current menu's button and not inside the dropdown itself
+        if (menuButton !== event.target && !clickedInsideDropdown) {
+          dropdown.style.display = 'none';
+        }
+      });
+
+      // If the click was specifically on a menu button, toggle its dropdown
+      if (clickedOnMenuButton) {
+        const dropdown = event.target.nextElementSibling;
+        if (dropdown && dropdown.classList.contains('dropdown-menu')) {
+          dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+      }
+    });
+    // --- End Dropdown Menu Toggle ---
+  </script>
+</body>
+</html> 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/profile.css" />
+</head>
+<body>
+  <div class="header-nav">
+    <a href="/" class="back-button">← Kembali</a>
+  </div>
+  <div class="profile-container">
+    <!-- Card 1: Photo Display -->
+    <div class="card">
+      <h3>Foto Profil</h3>
+      <div class="profile-picture">
+        <img src="<%= user.photo || '/uploads/profiles/default.jpg' %>" alt="Foto Profil" id="preview-image"/>
+        <!-- Button to trigger the hidden file input in the *other* card -->
+        <div class="upload-controls">
+          <button type="button" onclick="document.getElementById('photo-input').click()" class="btn-upload">
+            Pilih Foto
+          </button>
+          <small class="upload-info">Format: JPG, PNG, GIF (Max. 5MB)</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Account Info & Form -->
+    <div class="card">
+      <!-- Form now starts *inside* the second card -->
+      <form method="POST" action="/profile/update" enctype="multipart/form-data">
+        <h3>Informasi Akun</h3>
+        
+        <!-- Hidden file input is now part of this form -->
+        <input type="file" name="photo" id="photo-input" accept="image/jpeg,image/png,image/gif" style="display: none;" onchange="previewFile()">
+        
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" value="<%= user.username %>" readonly />
+        </div>
+        <div class="form-group">
+          <label>Nama</label>
+          <input type="text" name="name" value="<%= user.name %>" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" value="<%= user.email %>" />
+        </div>
+        <div class="form-group">
+          <label>No Telp</label>
+          <input type="text" name="phone" value="<%= user.phone || '' %>" />
+        </div>
+        <div class="form-group">
+          <label>Alamat</label>
+          <textarea name="address"><%= user.address || '' %></textarea>
+        </div>
+        <div class="form-group">
+
+        </div>
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+      </form> <!-- Form ends inside the second card -->
+    </div>
+  </div>
+
+  <script>
+    function previewFile() {
+      const preview = document.getElementById('preview-image');
+      const file = document.getElementById('photo-input').files[0];
+      const reader = new FileReader();
+
+      reader.onloadend = function () {
+        preview.src = reader.result;
+      }
+
+      if (file) {
+        reader.readAsDataURL(file);
+      } else {
+        // Optionally reset to default or previous image if no file selected
+        // preview.src = "<%= user.photo || '/uploads/profiles/default.jpg' %>"; 
+      }
+    }
+  </script>
+</body>
+</html>

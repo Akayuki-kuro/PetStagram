@@ -1,0 +1,110 @@
+/* Reset khusus login */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f7f7f7;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-wrapper {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+/* Container untuk card login / register */
+.login-container,
+.registration-card {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin: 0 auto;
+  padding: 30px 30px 40px;
+  text-align: center;
+  position: relative;
+}
+
+/* Header Card */
+.login-header,
+.registration-card h2 {
+  background-color: #4CAF50;
+  color: white;
+  padding: 20px;
+  border-radius: 20px 20px 0 0;
+  margin: -30px -30px 30px -30px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Form Inputs */
+form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 50px;
+  background-color: #eee;
+  font-size: 16px;
+  outline: none;
+}
+
+/* Button */
+.btn-login,
+.btn-register {
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-login:hover,
+.btn-register:hover {
+  background-color: #43a047;
+}
+
+/* Signup Link */
+.signup-link {
+  margin-top: 25px;
+  font-size: 14px;
+  color: #555;
+}
+
+.signup-link a {
+  color: #4CAF50;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Error Message */
+.error-message {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 15px;
+}

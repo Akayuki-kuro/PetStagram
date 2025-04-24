@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Petstagram</title>
+  <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .error-message {
+      color: #dc3545;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="center-wrapper">
+    <h2>Sign In</h2>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <p class="error-message"><%= error %></p>
+    <% } %>
+    <form action="/auth/login" method="POST">
+      <div class="input-group">
+        <input type="text" name="username" placeholder="Username" required autocomplete="username">
+      </div>
+      <div class="input-group">
+        <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-login">Sign In</button>
+      <div class="signup-link">
+        Don't have an account? <a href="/auth/register">Sign Up Now</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
